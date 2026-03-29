@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Attendence {
-    private String attName;
-    private String attEmail;
+    private int attendeeId;
+    private String attendeeName;
+    private String email;
 }

@@ -1,0 +1,61 @@
+package com.example.homeworkres2.service.serviceMpl;
+
+import com.example.homeworkres2.exception.NotFoundExceptionHandler;
+import com.example.homeworkres2.model.Events;
+//import com.example.homeworkres2.model.Venuse;
+import com.example.homeworkres2.model.Venuse;
+import com.example.homeworkres2.repository.EventRepository;
+//import com.example.homeworkres2.repository.eventRepository;
+import com.example.homeworkres2.request.EventRequest;
+import com.example.homeworkres2.request.VenuesRequest;
+import com.example.homeworkres2.service.EventService;
+import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+@RequiredArgsConstructor
+@Service
+//@RequiredArgsConstructor
+public class EventServiceImp implements EventService {
+    private final EventRepository eventRepository;
+
+    @Override
+    public List<Events> getAllEvent(int size, int page) {
+
+        return eventRepository.getAllEvents(size, page);
+    }
+
+    @Override
+    public Events getById(int id) {
+        Events eventById = eventRepository.getById(id);
+        if(eventById == null){
+            throw new NotFoundExceptionHandler("Event with this Id " + id + " not found");
+        }
+        return eventRepository.getById(id);
+    }
+
+    @Override
+    public Events updateEvent(EventRequest request, int id) {
+        Events venuseId = eventRepository.getById(id);
+        if(venuseId == null){
+            throw new NotFoundExceptionHandler("Can't update with this ID: " + id + " , ID not found");
+        }
+        return eventRepository.updateEvent(request, id);
+    }
+
+    @Override
+    public Events createEvent(EventRequest request) {
+        return eventRepository.createEvent(request);
+    }
+
+
+    @Override
+    public void deleteEvent(int id) {
+        Events venuseId = eventRepository.getById(id);
+        if(venuseId == null){
+            throw new NotFoundExceptionHandler("Can't Delete with this ID: " + id + " , ID not found");
+        }
+        eventRepository.deleteEvent(id);
+    }
+}
