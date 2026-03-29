@@ -30,6 +30,6 @@ public interface AttendeeRepository {
     @Select("update attendees set attendee_name = #{res.attendeeName}, email = #{res.email} where attendee_id = #{id} returning *")
     Attendence updateAttendee(@Param("res") AttendeeRequest request, int id);
 
-    @Delete("delete from attendees where attendee_id = #{id}")
+    @Select("delete from attendees where attendee_id = #{id} returning * ")
     String deleteAttendee(int id);
 }

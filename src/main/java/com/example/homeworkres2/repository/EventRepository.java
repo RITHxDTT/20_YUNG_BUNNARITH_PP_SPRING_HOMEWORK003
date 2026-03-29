@@ -11,7 +11,7 @@ public interface EventRepository {
             @Result(property = "eventId", column = "event_id"),
             @Result(property = "eventName", column = "event_name"),
             @Result(property = "eventDate", column = "event_date"),
-            @Result(property = "venueId", column = "venuse_id")
+            @Result(property = "venuseSub", column =  "event_id" , one = @One(select = "com.example.homeworkres2.repository.VenuesEventRepository.getVenuFromSub"))
     })
     @Select("select * from event limit #{size} offset (#{page} - 1) * #{size}")
     List<Events> getAllEvents(int size, int page);

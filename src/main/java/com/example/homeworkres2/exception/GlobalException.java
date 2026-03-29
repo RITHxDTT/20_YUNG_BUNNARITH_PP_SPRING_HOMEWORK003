@@ -24,29 +24,23 @@ import java.util.Objects;
 
 public class GlobalException {
 
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ProblemDetail handlerExceptioonArgument(MethodArgumentNotValidException ex){
-//        ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-//
-//        Map<String, Object> errrors = new HashMap<>();
-//
-//        for(FieldError e : ex.getBindingResult().getFieldErrors()){
-//            errrors.put(e.getField(), e.getDefaultMessage());
-//        }
-//        detail.setProperty("error", errrors);
-//        return detail;
-//    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ProblemDetail handlerExceptioonArgumentException(MethodArgumentNotValidException ex){
+    public ProblemDetail handleValidationException(MethodArgumentNotValidException ex) {
         ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
 
-        Map<String, Object> errrors = new HashMap<>();
+        Map<String, Object> errors = new HashMap<>();
 
-        for(FieldError e : ex.getBindingResult().getFieldErrors()){
-            errrors.put(e.getField(), e.getDefaultMessage());
+        for (FieldError e : ex.getBindingResult().getFieldErrors()) {
+
+            if ("email".equals(e.getField())) {
+                errors.put(e.getField(), "Invalid email format");
+            } else {
+                errors.put(e.getField(), e.getDefaultMessage());
+            }
         }
-        detail.setProperty("error", errrors);
+
+        detail.setProperty("error", errors);
         return detail;
     }
 
