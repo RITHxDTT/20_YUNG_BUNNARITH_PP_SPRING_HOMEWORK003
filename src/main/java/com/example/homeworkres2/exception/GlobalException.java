@@ -24,18 +24,18 @@ import java.util.Objects;
 
 public class GlobalException {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ProblemDetail handlerExceptioonArgument(MethodArgumentNotValidException ex){
-        ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-
-        Map<String, Object> errrors = new HashMap<>();
-
-        for(FieldError e : ex.getBindingResult().getFieldErrors()){
-            errrors.put(e.getField(), e.getDefaultMessage());
-        }
-        detail.setProperty("error", errrors);
-        return detail;
-    }
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ProblemDetail handlerExceptioonArgument(MethodArgumentNotValidException ex){
+//        ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+//
+//        Map<String, Object> errrors = new HashMap<>();
+//
+//        for(FieldError e : ex.getBindingResult().getFieldErrors()){
+//            errrors.put(e.getField(), e.getDefaultMessage());
+//        }
+//        detail.setProperty("error", errrors);
+//        return detail;
+//    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handlerExceptioonArgumentException(MethodArgumentNotValidException ex){
