@@ -1,15 +1,26 @@
 package com.example.homeworkres2.controller;
 
 
+import com.example.homeworkres2.apiResponse.ApiRespone;
+import com.example.homeworkres2.apiResponse.EventRespone;
+import com.example.homeworkres2.apiResponse.EventRespone;
 import com.example.homeworkres2.apiResponse.VenuesRespone;
+import com.example.homeworkres2.exception.NotFoundExceptionHandler;
 import com.example.homeworkres2.model.Venuse;
+import com.example.homeworkres2.repository.EventRepository;
 import com.example.homeworkres2.request.VenuesRequest;
+import com.example.homeworkres2.service.EventService;
 import com.example.homeworkres2.service.VenuesService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @RestController
@@ -42,7 +53,7 @@ public class venuesController {
     }
 
     @PostMapping
-    public ResponseEntity<VenuesRespone> createVenu(@RequestBody VenuesRequest request){
+    public ResponseEntity<VenuesRespone> createVenu(@RequestBody @Valid VenuesRequest request){
 
         VenuesRespone venuesRespone = VenuesRespone.builder()
                 .message("created venues successfully")
@@ -72,6 +83,15 @@ public class venuesController {
                 .timestamp(LocalDate.now())
              .build();
         return ResponseEntity.ok(venuesRespone);
+    }
+
+
+
+    @ExceptionHandler(NotFoundExceptionHandler.class)
+    public ProblemDetail  handlerExceptioon(NotFoundExceptionHandler ex){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setProperty("timestamp" , Instant.now());
+        return  problemDetail;
     }
 
 
