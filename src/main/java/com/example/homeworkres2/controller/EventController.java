@@ -23,7 +23,6 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 
 public class EventController {
-    private final EventRepository eventRepository;
     private final EventService eventService;
 
 
