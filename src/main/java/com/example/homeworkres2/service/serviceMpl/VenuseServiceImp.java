@@ -27,8 +27,9 @@ public class VenuseServiceImp implements VenuesService  {
     @Override
     public Venuse getById(int id) {
         Venuse venuseId = venuseRepository.getById(id);
-        if (id < 0) {
-            throw new GreaterException("Id can't be negative number ");
+
+        if(id < 0){
+            throw new  GreaterException("number can't be negative !, must greater than 0 ");
         }
        else if(venuseId == null){
             throw new NotFoundExceptionHandler("user with this Id " + id + " not found");
@@ -45,6 +46,9 @@ public class VenuseServiceImp implements VenuesService  {
        else if(venuseId == null){
             throw new NotFoundExceptionHandler("Can't update with this ID: " + id + " , ID not found");
         }
+       if(venuseRepository.getVenuesName(request.getVenName()) != null){
+           throw new DuplicateEmailException("Venue Name already exist ! ");
+       }
 
         return venuseRepository.updateVenu(request, id);
     }
@@ -52,7 +56,7 @@ public class VenuseServiceImp implements VenuesService  {
     @Override
     public Venuse createVenues(VenuesRequest request) {
 
-        if(venuseRepository.getVenuesName(request.getVenName())!= null){
+        if(venuseRepository.getVenuesName(request.getVenName()) != null){
             throw new DuplicateEmailException("can't update with this Venues name, exist ! ");
         }
         return venuseRepository.createVenu(request);

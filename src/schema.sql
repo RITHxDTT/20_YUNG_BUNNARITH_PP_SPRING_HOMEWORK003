@@ -1,7 +1,7 @@
 
 
 create table venues(
-                       id serial primary key,
+                       venue_id serial primary key,
                        venue_name varchar(50) unique,
                        location varchar(100)
 );
@@ -10,7 +10,7 @@ create table event(
                       event_id serial primary key,
                       event_name varchar(50) unique,
                       event_date date,
-                      venue_id integer references venues(id)
+                      venue_id integer references venues(venue_id)
 );
 
 create table attendees(

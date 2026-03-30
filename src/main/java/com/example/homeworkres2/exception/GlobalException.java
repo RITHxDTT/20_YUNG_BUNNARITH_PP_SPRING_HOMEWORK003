@@ -25,39 +25,76 @@ import java.util.Objects;
 public class GlobalException {
 
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ProblemDetail handleValidationException(MethodArgumentNotValidException ex) {
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ProblemDetail handleParameterValidation(HandlerMethodValidationException ex) {
+
         ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        detail.setTitle("Invalid Parameter");
+        detail.setDetail("Parameter validation failed (e.g. id must be > 0)");
+        detail.setProperty("timestamp", Instant.now());
 
-
-        Map<String, Object> errors = new HashMap<>();
-
-        for (FieldError e : ex.getBindingResult().getFieldErrors()) {
-
-            if ("email".equals(e.getField())) {
-                errors.put(e.getField(), "Invalid email format");
-            } else {
-                errors.put(e.getField(), e.getDefaultMessage());
-            }
-        }
-
-        detail.setProperty("error", errors);
         return detail;
     }
 
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ProblemDetail handleDuplicate(DataIntegrityViolationException ex, HttpServletRequest request) {
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ProblemDetail handleDuplicateEmail(DuplicateEmailException ex) {
 
         ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
-
-        detail.setTitle("Conflict Name");
-        detail.setDetail( "This name already exists ! ");
+        detail.setTitle("Duplicate Email");
+        detail.setDetail(ex.getMessage());
         detail.setProperty("timestamp", Instant.now());
-        detail.setProperty("instance", request.getRequestURI());
-        detail.setType(URI.create("http://localhost:8080/errors/duplicate-user"));
 
         return detail;
+    }
+
+
+
+    @ExceptionHandler(DuplicateName.class)
+    public ProblemDetail handleDuplicateName(DuplicateName ex) {
+
+        ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        detail.setTitle("Duplicate Name");
+        detail.setDetail(ex.getMessage());
+        detail.setProperty("timestamp", Instant.now());
+
+        return detail;
+    }
+
+
+    @ExceptionHandler(NotFoundExceptionHandler.class)
+    public ProblemDetail handleNotFound(NotFoundExceptionHandler ex) {
+
+        ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        detail.setTitle("ID not Found");
+        detail.setDetail(ex.getMessage());
+        detail.setProperty("timestamp", Instant.now());
+
+        return detail;
+    }
+
+
+
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    public ProblemDetail handleDatabaseError(DataIntegrityViolationException ex,
+//                                             HttpServletRequest request) {
+//
+//        ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+//        detail.setTitle("Name Conflict");
+//        detail.setDetail("this name is already exist ! please write other name ");
+//        detail.setProperty("path", request.getRequestURI());
+//        detail.setProperty("timestamp", Instant.now());
+//
+//        return detail;
+//    }
+
+    @ExceptionHandler(GreaterException.class)
+    public ProblemDetail greaterThan(GreaterException ex){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setProperty("timestamp" , Instant.now());
+//        problemDetail.setProperties("message", ex.getMessage());
+        return  problemDetail;
     }
 
 

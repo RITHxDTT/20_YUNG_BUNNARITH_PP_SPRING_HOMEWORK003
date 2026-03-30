@@ -1,6 +1,7 @@
 package com.example.homeworkres2.service.serviceMpl;
 
 import com.example.homeworkres2.exception.DuplicateEmailException;
+import com.example.homeworkres2.exception.DuplicateName;
 import com.example.homeworkres2.exception.GreaterException;
 import com.example.homeworkres2.exception.NotFoundExceptionHandler;
 import com.example.homeworkres2.model.Attendence;
@@ -57,6 +58,9 @@ public class AttendeeServiceImp implements AttendeeService {
     public Attendence createAttendee(AttendeeRequest request) {
         if(attendeeRepository.getEmail(request.getEmail()) != null){
             throw new DuplicateEmailException("Attendee with this Email " + request.getEmail() + " already exists");
+        }
+        else if(attendeeRepository.getName(request.getAttendeeName()) != null){
+            throw new DuplicateName("Attendee name already exists");
         }
         return attendeeRepository.createAttendee(request);
     }

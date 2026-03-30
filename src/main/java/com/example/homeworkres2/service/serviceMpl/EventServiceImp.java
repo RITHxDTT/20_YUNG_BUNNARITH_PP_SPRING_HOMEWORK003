@@ -45,24 +45,30 @@ public class EventServiceImp implements EventService {
 
     @Override
     public Events updateEvent(EventRequest request, int id) {
-        Events venuseId = eventRepository.getById(id);
+        Events eventsID = eventRepository.getById(id);
         if(id < 0){
             throw new  GreaterException("number can't be negative !, must greater than 0 ");
         }
-       else if(venuseId == null){
+       else if(eventsID == null){
             throw new NotFoundExceptionHandler("Can't update with this ID: " + id + " , ID not found");
-        }
+       }
 
        if(eventRepository.getEventByName(request.getEventName())!= null){
            throw new DuplicateEmailException("can't update with this event name, exist ! ");
+       }
+       else if(eventRepository.getEventByVenueId(id) == null){
+           throw new NotFoundExceptionHandler("Venue  ID not found  ");
        }
         return eventRepository.updateEvent(request, id);
     }
 
     @Override
     public Events createEvent(EventRequest request) {
-        if(eventRepository.getEventByName(request.getEventName())!= null){
-            throw new DuplicateEmailException("can't update with this event name, exist ! ");
+        if(eventRepository.getEventByName(request.getEventName()) != null){
+            throw new DuplicateEmailException("can't create with this event name, exist ! ");
+        }
+        else if(eventRepository.getEventByVenueId(request.getVenueId()) == null){
+            throw new NotFoundExceptionHandler("Venue  ID not found  ");
         }
         return eventRepository.createEvent(request);
     }

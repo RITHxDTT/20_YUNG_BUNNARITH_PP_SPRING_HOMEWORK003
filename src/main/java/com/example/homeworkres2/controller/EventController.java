@@ -78,6 +78,7 @@ public class EventController {
         EventRespone eventRespone = EventRespone.builder()
                 .message("Delete event successfully")
                 .status("ok")
+                .payload("Completely")
                 .timestamp(LocalDate.now())
                 .build();
         return ResponseEntity.ok(eventRespone);
@@ -96,25 +97,25 @@ public class EventController {
 //                        .build()
 //        );
 //    }
-@ExceptionHandler(NotFoundExceptionHandler.class)
-    public ProblemDetail handlerExceptioon(NotFoundExceptionHandler ex){
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-        problemDetail.setProperty("timestamp" , Instant.now());
-        return  problemDetail;
-    }
-
-    @ExceptionHandler(GreaterException.class)
-    public ProblemDetail greaterThan(GreaterException ex){
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-        problemDetail.setProperty("timestamp" , Instant.now());
-        return  problemDetail;
-    }
-
-    @ExceptionHandler(DuplicateName.class)
-    public  ProblemDetail duplicateNameException(DuplicateName duplicateName){
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, duplicateName.getMessage());
-        problemDetail.setProperty("timestamp" , LocalDate.now());
-        problemDetail.setStatus(HttpStatus.CONFLICT);
-        return problemDetail;
-    }
+//@ExceptionHandler(NotFoundExceptionHandler.class)
+//    public ProblemDetail handlerExceptioon(NotFoundExceptionHandler ex){
+//        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+//        problemDetail.setProperty("timestamp" , Instant.now());
+//        return  problemDetail;
+//    }
+//
+//    @ExceptionHandler(GreaterException.class)
+//    public ProblemDetail greaterThan(GreaterException ex){
+//        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+//        problemDetail.setProperty("timestamp" , Instant.now());
+//        return  problemDetail;
+//    }
+//
+//    @ExceptionHandler(DuplicateName.class)
+//    public  ProblemDetail duplicateNameException(DuplicateName duplicateName){
+//        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, duplicateName.getMessage());
+//        problemDetail.setProperty("timestamp" , LocalDate.now());
+//        problemDetail.setStatus(HttpStatus.CONFLICT);
+//        return problemDetail;
+//    }
 }

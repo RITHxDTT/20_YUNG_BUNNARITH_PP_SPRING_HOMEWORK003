@@ -33,6 +33,6 @@ public interface VenuseRepository {
     @Select("delete from venues where venue_id = #{id}")
     String deleteVenue(int id);
 
-    @Select("delete from venues where venue_name = #{veName}")
+    @Select("select *  from venues where venue_name = #{veName}")
     Venuse getVenuesName(String veName);
 }
