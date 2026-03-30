@@ -29,6 +29,7 @@ public class GlobalException {
     public ProblemDetail handleValidationException(MethodArgumentNotValidException ex) {
         ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
 
+
         Map<String, Object> errors = new HashMap<>();
 
         for (FieldError e : ex.getBindingResult().getFieldErrors()) {
@@ -50,13 +51,14 @@ public class GlobalException {
 
         ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
 
-        detail.setTitle("Conflict");
+        detail.setTitle("Conflict Name");
         detail.setDetail( "This name already exists ! ");
-
         detail.setProperty("timestamp", Instant.now());
         detail.setProperty("instance", request.getRequestURI());
         detail.setType(URI.create("http://localhost:8080/errors/duplicate-user"));
 
         return detail;
     }
+
+
 }

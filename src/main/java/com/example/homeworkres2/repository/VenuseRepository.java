@@ -11,13 +11,14 @@ public interface VenuseRepository {
 
     @Results(id = "mapperVenuse", value = {
             @Result(property = "veName", column = "venue_name"),
-            @Result(property = "venLocation", column = "location")
+            @Result(property = "venLocation", column = "location"),
+            @Result(property = "id", column = "venue_id")
     })
     @Select("select * from venues limit  #{size} offset  (#{page} -1) * #{size}")
      List<Venuse> getAllVenuse(int size, int page);
 
     @ResultMap("mapperVenuse")
-    @Select("select * from venues where id = #{id}")
+    @Select("select * from venues where venue_id = #{id}")
     Venuse getById(int id);
 
     @ResultMap("mapperVenuse")
@@ -25,10 +26,13 @@ public interface VenuseRepository {
     Venuse createVenu(VenuesRequest request);
 
     @ResultMap("mapperVenuse")
-    @Select("update  venues set venue_name = #{res.venName}, location = #{res.location} where id = #{id} returning *")
+    @Select("update  venues set venue_name = #{res.venName}, location = #{res.location} where venue_id = #{id} returning *")
     Venuse updateVenu(@Param("res") VenuesRequest request, int id );
 
     @ResultMap("mapperVenuse")
-    @Select("delete from venues where id = #{id}")
+    @Select("delete from venues where venue_id = #{id}")
     String deleteVenue(int id);
+
+    @Select("delete from venues where venue_name = #{veName}")
+    Venuse getVenuesName(String veName);
 }

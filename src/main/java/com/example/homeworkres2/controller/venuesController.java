@@ -5,6 +5,8 @@ import com.example.homeworkres2.apiResponse.ApiRespone;
 import com.example.homeworkres2.apiResponse.EventRespone;
 import com.example.homeworkres2.apiResponse.EventRespone;
 import com.example.homeworkres2.apiResponse.VenuesRespone;
+import com.example.homeworkres2.exception.DuplicateName;
+import com.example.homeworkres2.exception.GreaterException;
 import com.example.homeworkres2.exception.NotFoundExceptionHandler;
 import com.example.homeworkres2.model.Venuse;
 import com.example.homeworkres2.repository.EventRepository;
@@ -12,6 +14,7 @@ import com.example.homeworkres2.request.VenuesRequest;
 import com.example.homeworkres2.service.EventService;
 import com.example.homeworkres2.service.VenuesService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +34,7 @@ public class venuesController {
 
 
     @GetMapping
-    public ResponseEntity<VenuesRespone> getAllVenues(@RequestParam int size, @RequestParam int page){
+    public ResponseEntity<VenuesRespone> getAllVenues(@RequestParam @Positive int size, @RequestParam @Positive int page){
         VenuesRespone venuesRespone = VenuesRespone.builder()
                 .message("Retrieved venues successfully")
                 .status("ok")
@@ -43,7 +46,7 @@ public class venuesController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VenuesRespone> getByIdVenues(@PathVariable  int id){
+    public ResponseEntity<VenuesRespone> getByIdVenues(@PathVariable @Positive  int id){
         VenuesRespone venuesRespone = VenuesRespone.builder()
                 .message("Retrieved venues successfully")
                 .status("ok")
@@ -64,7 +67,7 @@ public class venuesController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VenuesRespone> updateVenu(@RequestBody VenuesRequest request, @PathVariable int id){
+    public ResponseEntity<VenuesRespone> updateVenu(@RequestBody VenuesRequest request, @PathVariable @Positive int id){
 
         VenuesRespone venuesRespone = VenuesRespone.builder()
                 .message("Update venues successfully")
@@ -75,7 +78,7 @@ public class venuesController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<VenuesRespone> deleteVenu(@PathVariable int id){
+    public ResponseEntity<VenuesRespone> deleteVenu(@PathVariable @Positive int id){
         venuesService.deleteVenues(id);
         VenuesRespone venuesRespone = VenuesRespone.builder()
                 .message("Delete venues successfully")
@@ -85,13 +88,26 @@ public class venuesController {
         return ResponseEntity.ok(venuesRespone);
     }
 
-
-
     @ExceptionHandler(NotFoundExceptionHandler.class)
     public ProblemDetail  handlerExceptioon(NotFoundExceptionHandler ex){
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setProperty("timestamp" , Instant.now());
         return  problemDetail;
+    }
+
+    @ExceptionHandler(GreaterException.class)
+    public ProblemDetail greaterThan(GreaterException ex){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problemDetail.setProperty("timestamp" , Instant.now());
+        return  problemDetail;
+    }
+
+    @ExceptionHandler(DuplicateName.class)
+    public  ProblemDetail duplicateNameException(DuplicateName duplicateName){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, duplicateName.getMessage());
+        problemDetail.setProperty("timestamp" , LocalDate.now());
+        problemDetail.setStatus(HttpStatus.CONFLICT);
+        return problemDetail;
     }
 
 

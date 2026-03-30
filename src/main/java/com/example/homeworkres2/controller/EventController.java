@@ -2,6 +2,8 @@ package com.example.homeworkres2.controller;
 
 import com.example.homeworkres2.apiResponse.EventRespone;
 import com.example.homeworkres2.apiResponse.VenuesRespone;
+import com.example.homeworkres2.exception.DuplicateName;
+import com.example.homeworkres2.exception.GreaterException;
 import com.example.homeworkres2.exception.NotFoundExceptionHandler;
 import com.example.homeworkres2.repository.EventRepository;
 import com.example.homeworkres2.request.EventRequest;
@@ -99,5 +101,20 @@ public class EventController {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setProperty("timestamp" , Instant.now());
         return  problemDetail;
+    }
+
+    @ExceptionHandler(GreaterException.class)
+    public ProblemDetail greaterThan(GreaterException ex){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setProperty("timestamp" , Instant.now());
+        return  problemDetail;
+    }
+
+    @ExceptionHandler(DuplicateName.class)
+    public  ProblemDetail duplicateNameException(DuplicateName duplicateName){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, duplicateName.getMessage());
+        problemDetail.setProperty("timestamp" , LocalDate.now());
+        problemDetail.setStatus(HttpStatus.CONFLICT);
+        return problemDetail;
     }
 }

@@ -1,5 +1,7 @@
 package com.example.homeworkres2.service.serviceMpl;
 
+import com.example.homeworkres2.exception.DuplicateEmailException;
+import com.example.homeworkres2.exception.GreaterException;
 import com.example.homeworkres2.exception.NotFoundExceptionHandler;
 import com.example.homeworkres2.model.Events;
 //import com.example.homeworkres2.model.Venuse;
@@ -22,14 +24,20 @@ public class EventServiceImp implements EventService {
 
     @Override
     public List<Events> getAllEvent(int size, int page) {
-
+        if(size < 0 || page <0){
+            throw new  GreaterException("number can't be negative !, must greater than 0 ");
+        }
         return eventRepository.getAllEvents(size, page);
     }
 
     @Override
     public Events getById(int id) {
         Events eventById = eventRepository.getById(id);
-        if(eventById == null){
+
+        if(id < 0){
+            throw new  GreaterException("number can't be negative !, must greater than 0 ");
+        }
+        else if(eventById == null){
             throw new NotFoundExceptionHandler("Event with this Id " + id + " not found");
         }
         return eventRepository.getById(id);
@@ -38,14 +46,24 @@ public class EventServiceImp implements EventService {
     @Override
     public Events updateEvent(EventRequest request, int id) {
         Events venuseId = eventRepository.getById(id);
-        if(venuseId == null){
+        if(id < 0){
+            throw new  GreaterException("number can't be negative !, must greater than 0 ");
+        }
+       else if(venuseId == null){
             throw new NotFoundExceptionHandler("Can't update with this ID: " + id + " , ID not found");
         }
+
+       if(eventRepository.getEventByName(request.getEventName())!= null){
+           throw new DuplicateEmailException("can't update with this event name, exist ! ");
+       }
         return eventRepository.updateEvent(request, id);
     }
 
     @Override
     public Events createEvent(EventRequest request) {
+        if(eventRepository.getEventByName(request.getEventName())!= null){
+            throw new DuplicateEmailException("can't update with this event name, exist ! ");
+        }
         return eventRepository.createEvent(request);
     }
 

@@ -1,18 +1,22 @@
 package com.example.homeworkres2.controller;
 
 import com.example.homeworkres2.apiResponse.AttendeeResponse;
-import com.example.homeworkres2.apiResponse.EventRespone;
-import com.example.homeworkres2.repository.EventRepository;
+import com.example.homeworkres2.exception.DuplicateEmailException;
+import com.example.homeworkres2.exception.DuplicateName;
+import com.example.homeworkres2.exception.GreaterException;
+import com.example.homeworkres2.exception.NotFoundExceptionHandler;
 import com.example.homeworkres2.request.AttendeeRequest;
-import com.example.homeworkres2.request.EventRequest;
 import com.example.homeworkres2.service.AttendeeService;
-import com.example.homeworkres2.service.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/api/v1/attendees")
 @RequiredArgsConstructor
@@ -72,7 +76,40 @@ public class AttendeeController {
                 .message("Delete Attendee successfully")
                 .status("ok")
                 .timestamp(LocalDate.now())
+                .payload("completed ")
                 .build();
         return ResponseEntity.ok(attendeeResponse);
     }
+
+    @ExceptionHandler(NotFoundExceptionHandler.class)
+    public ProblemDetail handlerExceptioon(NotFoundExceptionHandler ex){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setProperty("timestamp" , Instant.now());
+        return  problemDetail;
+    }
+    @ExceptionHandler(DuplicateEmailException.class)
+    public  ProblemDetail duplicateEmailException(DuplicateEmailException duplicateEmailException){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, duplicateEmailException.getMessage());
+        problemDetail.setProperty("timestamp" , LocalDate.now());
+        problemDetail.setStatus(HttpStatus.CONFLICT);
+        return problemDetail;
+    }
+
+    @ExceptionHandler(GreaterException.class)
+    public ProblemDetail greaterThan(GreaterException ex){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problemDetail.setProperty("timestamp" , Instant.now());
+        return  problemDetail;
+    }
+
+    @ExceptionHandler(DuplicateName.class)
+    public  ProblemDetail duplicateNameException(DuplicateName duplicateName){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, duplicateName.getMessage());
+        problemDetail.setProperty("timestamp" , LocalDate.now());
+        problemDetail.setStatus(HttpStatus.CONFLICT);
+        return problemDetail;
+    }
+
+
 }
+

@@ -32,4 +32,11 @@ public interface AttendeeRepository {
 
     @Select("delete from attendees where attendee_id = #{id} returning * ")
     String deleteAttendee(int id);
+
+
+    @Select("select * from attendees where email = #{email}")
+    Attendence getEmail(String email);
+
+    @Select("select * from attendees where attendee_name = #{attendeeName}")
+    Attendence getName(String attendeeName);
 }

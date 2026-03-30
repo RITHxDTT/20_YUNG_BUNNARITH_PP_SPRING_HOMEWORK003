@@ -28,6 +28,11 @@ public interface EventRepository {
     @Select("update event set event_name = #{res.eventName}, event_date = #{res.eventDate}, venue_id = #{res.venueId} where event_id = #{id} returning *")
     Events updateEvent(@Param("res") EventRequest request, int id);
 
-    @Delete("delete from event where event_id = #{id}")
+    @Select("delete from event where event_id = #{id} returning *")
     String deleteEvent(int id);
+
+    @Select("select * from event where event_name = #{eventName}")
+    Events getEventByName(String eventName);
+
+
 }

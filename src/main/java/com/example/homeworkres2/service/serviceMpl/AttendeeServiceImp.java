@@ -1,5 +1,7 @@
 package com.example.homeworkres2.service.serviceMpl;
 
+import com.example.homeworkres2.exception.DuplicateEmailException;
+import com.example.homeworkres2.exception.GreaterException;
 import com.example.homeworkres2.exception.NotFoundExceptionHandler;
 import com.example.homeworkres2.model.Attendence;
 import com.example.homeworkres2.model.Events;
@@ -26,7 +28,10 @@ public class AttendeeServiceImp implements AttendeeService {
     @Override
     public Attendence getById(int id) {
         Attendence attendeenById = attendeeRepository.getById(id);
-        if(attendeenById == null){
+        if(id < 0){
+            throw new GreaterException("Id must greater than 1 and can't be negative");
+
+        } else if (attendeenById == null) {
             throw new NotFoundExceptionHandler("Attendee with this Id " + id + " not found");
         }
         return attendeeRepository.getById(id);
@@ -34,16 +39,25 @@ public class AttendeeServiceImp implements AttendeeService {
 
     @Override
     public Attendence updateAttendee(AttendeeRequest request, int id) {
-        Attendence attendence = attendeeRepository.getById(id);
-        if(attendence == null){
-            throw new NotFoundExceptionHandler("Can't update with this ID: " + id + " , ID not found");
+        Attendence attendeenById = attendeeRepository.getById(id);
+        if(id < 0){
+            throw new GreaterException("Id must greater than 1 and can't be negative");
+
+        } else if (attendeenById == null) {
+            throw new NotFoundExceptionHandler("Attendee with this Id " + id + " not found");
+        }
+
+        if(attendeeRepository.getName(request.getAttendeeName()) != null){
+            throw new DuplicateEmailException("Attendee name already exists");
         }
         return attendeeRepository.updateAttendee(request, id);
     }
 
     @Override
     public Attendence createAttendee(AttendeeRequest request) {
-
+        if(attendeeRepository.getEmail(request.getEmail()) != null){
+            throw new DuplicateEmailException("Attendee with this Email " + request.getEmail() + " already exists");
+        }
         return attendeeRepository.createAttendee(request);
     }
 
